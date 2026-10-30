@@ -132,19 +132,23 @@
                     </div>
                 </div>
 
-                <!-- Contrôles de Simulation de Crise, Guide d'Intégration & Export -->
+                <!-- Contrôles : Parcours Dirigeant, Spécification REST, Crise, Rollback & Export -->
                 <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="startRecruiterTour()" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold text-xs transition flex items-center gap-1.5 shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-play-circle"></i>
+                        <span>🎯 Parcours Dirigeant (1 min)</span>
+                    </button>
                     <button onclick="openIntegrationModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/40 text-xs font-semibold transition flex items-center gap-1.5">
                         <i class="fa-solid fa-diagram-project"></i>
-                        <span>Spécification REST / Docker (v4.2)</span>
+                        <span>Spécification REST / Docker</span>
                     </button>
                     <button onclick="injectCrisisStressTest()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/40 text-xs font-semibold transition flex items-center gap-1.5">
                         <i class="fa-solid fa-radiation"></i>
-                        <span>Injecter Surcharge / Attaque</span>
+                        <span>Injecter Surcharge</span>
                     </button>
                     <button onclick="triggerFailsafeRollback()" class="px-3 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 text-xs font-semibold transition flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate-left"></i>
-                        <span>Kill-Switch Rollback RDM</span>
+                        <span>Kill-Switch RDM</span>
                     </button>
                     <button onclick="toggleTelemetryFormat()" id="btn-format-toggle" class="px-3 py-1.5 rounded-lg bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 text-xs font-mono font-semibold transition flex items-center gap-1.5">
                         <i class="fa-solid fa-microchip"></i>
@@ -152,37 +156,41 @@
                     </button>
                     <button onclick="exportComplianceMarkdown()" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shadow-lg shadow-sky-500/20">
                         <i class="fa-solid fa-file-contract"></i>
-                        <span>Rapport Homologation (.md)</span>
+                        <span>Homologation (.md)</span>
                     </button>
                 </div>
             </div>
 
             <!-- Ligne 2 : Décodeur d'En-tête Binaire FRCv3 (24 Octets Big-Endian >HBBffQI) -->
             <div class="bg-slate-950/90 border border-slate-800/90 rounded-xl p-2.5 grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-center font-mono text-xs">
-                <!-- Cellules d'inspection des champs binaires (6 colonnes exactes) -->
-                <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-6 gap-1.5 text-center">
+                <!-- Cellules d'inspection des champs binaires (7 colonnes sans doublon) -->
+                <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-7 gap-1.5 text-center">
                     <div class="bg-slate-900/90 px-2 py-1 rounded border border-slate-800">
-                        <span class="text-[9px] text-slate-500 block">MAGIC (uint16)</span>
+                        <span class="text-[9px] text-slate-500 block">MAGIC (u16)</span>
                         <span id="bin-magic" class="font-bold text-emerald-400">0x5347</span>
                     </div>
                     <div class="bg-slate-900/90 px-2 py-1 rounded border border-slate-800">
-                        <span class="text-[9px] text-slate-500 block">VER (uint8)</span>
+                        <span class="text-[9px] text-slate-500 block">VER (u8)</span>
                         <span id="bin-ver" class="font-bold text-sky-400">0x42 (v4.2)</span>
                     </div>
                     <div class="bg-slate-900/90 px-2 py-1 rounded border border-slate-800">
-                        <span class="text-[9px] text-slate-500 block">DRIFT (float32)</span>
-                        <span id="bin-drift" class="font-bold text-amber-300">0.3200</span>
+                        <span class="text-[9px] text-slate-500 block">FLAGS (u8)</span>
+                        <span id="bin-flags-hex" class="font-bold text-amber-300">0x04</span>
                     </div>
                     <div class="bg-slate-900/90 px-2 py-1 rounded border border-slate-800">
-                        <span class="text-[9px] text-slate-500 block">SLA IDX (float32)</span>
+                        <span class="text-[9px] text-slate-500 block">DRIFT (f32)</span>
+                        <span id="bin-drift" class="font-bold text-slate-200">0.3200</span>
+                    </div>
+                    <div class="bg-slate-900/90 px-2 py-1 rounded border border-slate-800">
+                        <span class="text-[9px] text-slate-500 block">SLA IDX (f32)</span>
                         <span id="bin-sla" class="font-bold text-emerald-300">89.6%</span>
                     </div>
                     <div class="bg-slate-900/90 px-2 py-1 rounded border border-slate-800">
-                        <span class="text-[9px] text-slate-500 block">MERKLE / SIG (64b)</span>
+                        <span class="text-[9px] text-slate-500 block">MERKLE (64b)</span>
                         <span id="bin-sig" class="font-bold text-indigo-300 truncate block">0x9F8A7C01</span>
                     </div>
                     <div class="bg-slate-900/90 px-2 py-1 rounded border border-slate-800">
-                        <span class="text-[9px] text-slate-500 block">CHARGE RÉSEAU</span>
+                        <span class="text-[9px] text-slate-500 block">GAIN RÉSEAU</span>
                         <span id="bin-saving" class="font-bold text-sky-300">24B (-82%)</span>
                     </div>
                 </div>
@@ -1157,6 +1165,87 @@
     </main>
 
     <!-- ===================================================================== -->
+    <!-- MODALE : VISITE GUIDÉE / PARCOURS DIRIGEANT & RECRUTEUR (1 MIN)       -->
+    <!-- ===================================================================== -->
+    <div id="recruiter-modal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel rounded-2xl max-w-2xl w-full p-6 border border-emerald-500/40 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold">🎯</span>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Parcours Dirigeant &amp; Architecte — 4 Démonstrations Clés (v4.2)</h3>
+                        <p class="text-xs text-slate-400">Évaluez en 60 secondes la résilience opérationnelle, l'impact EBITDA et l'architecture Losange Cognitif.</p>
+                    </div>
+                </div>
+                <button onclick="closeRecruiterTour()" class="text-slate-400 hover:text-white text-xs px-2.5 py-1 rounded bg-slate-800">
+                    ✕ Fermer
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <!-- Étape 1 -->
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-sky-500/40 transition">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-sky-400 uppercase font-mono">1. Résilience de Flux &amp; Anti-Battement (Valve VCT)</span>
+                        <button onclick="tourTriggerStep(1)" class="px-2.5 py-1 rounded bg-sky-500 text-slate-950 font-bold text-[11px] transition">
+                            Tester la Crise
+                        </button>
+                    </div>
+                    <p class="text-slate-300 mt-1 leading-relaxed">
+                        Observez comment la valve VCT absorbe un pic de charge critique sans interrompre le service grâce à la bande d'hystérésis $\pm h$ et au protocole binaire 24 octets.
+                    </p>
+                </div>
+
+                <!-- Étape 2 -->
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 transition">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-emerald-400 uppercase font-mono">2. Arbitrage EBITDA, FinOps &amp; Détection $\Delta\text{AIC}$</span>
+                        <button onclick="tourTriggerStep(2)" class="px-2.5 py-1 rounded bg-emerald-500 text-slate-950 font-bold text-[11px] transition">
+                            Voir le Calculateur
+                        </button>
+                    </div>
+                    <p class="text-slate-300 mt-1 leading-relaxed">
+                        Chiffrez la préservation des marges (450 k€ d'impact EBITDA) et testez le critère d'Akaike qui distingue une dérive réelle du bruit capteur.
+                    </p>
+                </div>
+
+                <!-- Étape 3 -->
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-amber-500/40 transition">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-amber-400 uppercase font-mono">3. Épreuve Forensique &amp; Arbre Merkle / SHA-256</span>
+                        <button onclick="tourTriggerStep(3)" class="px-2.5 py-1 rounded bg-amber-500 text-slate-950 font-bold text-[11px] transition">
+                            Tester l'Altération
+                        </button>
+                    </div>
+                    <p class="text-slate-300 mt-1 leading-relaxed">
+                        Simulez une falsification en base de données : le chaînage cryptographique détecte instantanément la rupture et réconcilie l'empreinte S0.
+                    </p>
+                </div>
+
+                <!-- Étape 4 -->
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/40 transition">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-rose-400 uppercase font-mono">4. Banc d'Homologation Niveau 4 &amp; Airlock $(\epsilon, \delta)\text{-DP}$</span>
+                        <button onclick="tourTriggerStep(4)" class="px-2.5 py-1 rounded bg-rose-500 text-slate-950 font-bold text-[11px] transition">
+                            Lancer Stress-Test N4
+                        </button>
+                    </div>
+                    <p class="text-slate-300 mt-1 leading-relaxed">
+                        Exécutez le test combiné de la spécification v4.2 (perte LIDAR + bruit 25% + injection adverse Base64 bloquée par l'enclave TEE S1 en &le; 50 ms).
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-between items-center text-[11px] text-slate-400">
+                <span>Spécification : REF. ARCH-LOSANGE-V4.2</span>
+                <button onclick="closeRecruiterTour()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold transition">
+                    Accéder au Cockpit Complet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
     <!-- MODALE : SPÉCIFICATIONS REST, JSON SCHEMA & DOCKER COMPOSE (V4.2)     -->
     <!-- ===================================================================== -->
     <div id="integration-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
@@ -1345,8 +1434,33 @@ struct SentinelleHeader24B {
         }
 
         // ---------------------------------------------------------------------
-        // MODALE D'ARCHITECTURE & D'INTÉGRATION SI
+        // PARCOURS DIRIGEANT & MODALE D'ARCHITECTURE SI
         // ---------------------------------------------------------------------
+        function startRecruiterTour() {
+            document.getElementById('recruiter-modal').classList.remove('hidden');
+        }
+
+        function closeRecruiterTour() {
+            document.getElementById('recruiter-modal').classList.add('hidden');
+        }
+
+        function tourTriggerStep(step) {
+            closeRecruiterTour();
+            if (step === 1) {
+                switchTab('tab-vct');
+                injectCrisisStressTest();
+            } else if (step === 2) {
+                switchTab('tab-grc');
+                selectEnterpriseScenario('pra');
+            } else if (step === 3) {
+                switchTab('tab-ledger');
+                simulateDatabaseTampering();
+            } else if (step === 4) {
+                switchTab('tab-federated');
+                runLevel4BenchTest();
+            }
+        }
+
         function openIntegrationModal() {
             document.getElementById('integration-modal').classList.remove('hidden');
         }
@@ -1422,6 +1536,7 @@ struct SentinelleHeader24B {
             document.getElementById('frame-counter').innerText = state.frameCount;
             document.getElementById('bin-magic').innerText = '0x' + decoded.magic.toString(16).toUpperCase();
             document.getElementById('bin-ver').innerText = '0x' + decoded.version.toString(16).toUpperCase() + ' (v4.2)';
+            document.getElementById('bin-flags-hex').innerText = '0x' + decoded.flags.toString(16).padStart(2, '0').toUpperCase();
             document.getElementById('bin-drift').innerText = decoded.drift.toFixed(4);
             document.getElementById('bin-sla').innerText = decoded.sla.toFixed(1) + '%';
             document.getElementById('bin-sig').innerText = '0x' + decoded.sig.toString(16).toUpperCase().slice(0, 10);
@@ -2080,9 +2195,7 @@ struct SentinelleHeader24B {
         function saveLedgerToStorage() {
             try {
                 localStorage.setItem(STORAGE_KEY_LEDGER, JSON.stringify(state.ledger));
-            } catch (e) {
-                // Ignore storage quota errors in restricted iframes
-            }
+            } catch (e) {}
         }
 
         async function addLedgerEntry(category, description, criticality) {
@@ -2144,15 +2257,14 @@ struct SentinelleHeader24B {
                 const item = state.ledger[i];
                 const expectedPrev = (i === state.ledger.length - 1) ? '0000000000000000GENESIS_S0' : state.ledger[i + 1].hash;
                 const cleanDesc = item.description.replace(' [ALTÉRÉ_BDD: Seuil S1 modifié sans signature Ed25519]', '');
-                const canonical = `S0_V42|${item.timestamp}|${item.category}|${item.description}|${(item.initialCrit || item.weight).toFixed(2)}|${expectedPrev}`;
+                const canonical = `S0_V42|${item.timestamp}|${item.category}|${cleanDesc}|${(item.initialCrit || item.weight).toFixed(2)}|${expectedPrev}`;
                 const recomputed = await computeSHA256(canonical);
 
-                if (recomputed !== item.hash || item.tampered) {
+                if (item.tampered || item.hash !== recomputed) {
                     brokenCount++;
                     item.description = cleanDesc;
                     item.prevHash = expectedPrev;
-                    const restoredCanonical = `S0_V42|${item.timestamp}|${item.category}|${item.description}|${(item.initialCrit || item.weight).toFixed(2)}|${expectedPrev}`;
-                    item.hash = await computeSHA256(restoredCanonical);
+                    item.hash = recomputed;
                     item.tampered = false;
                 }
             }
@@ -2363,7 +2475,6 @@ struct SentinelleHeader24B {
             const csdRisk = 1 / (1 + Math.exp(-(1.2 * kl + 1.5 * unsafeMargin - 1.8)));
             const comboRisk = Math.min(1.0, csdRisk + edgeBoost + (cor.taints.length * 0.12));
 
-            // Application stricte des seuils de la Section 3.1 du PDF : ALLOW < 0.45, REVISE >= 0.45, REFUSE >= 0.70
             let projected = cor.text;
             let actionLabel = 'ALLOW (< 0.45)';
             let actionColor = 'font-bold text-emerald-400';
@@ -2471,7 +2582,6 @@ struct SentinelleHeader24B {
             badgeEl.innerText = data.decision;
             badgeEl.className = data.badgeClass;
 
-            // Mise à jour des latences FSM S0..S4
             const [l0, l1, l2, l3, l4] = data.latencies;
             const totalLat = l0 + l1 + l2 + l3 + l4;
             document.getElementById('fsm-s0').innerText = `${l0} ms (<=12 ms)`;
